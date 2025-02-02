@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gear Crafting Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+        input, select {
+            width: 100%;
+            height: 50px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 2px solid green;
+            border-radius: 5px;
+            font-size: 18px;
+            background-color: #f9f9f9;
+        }
+        input[readonly] {
+            background-color: #ddd;
+            border: 2px solid #aaa;
+            cursor: not-allowed;
+        }
+        select {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 5px 10px;
+            width: auto;
+            min-width: 150px;
+            max-width: 100%;
+        }
+    </style>
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+</head>
+<body>
+    <div class="title">Resource Refining Calculator</div>
+    <div class="twitch-container">
+        <div id="twitch-embed"></div>
+        <script type="text/javascript">
+            new Twitch.Embed("twitch-embed", {
+                width: "100%",
+                height: 200,
+                channel: "bernstone",
+                parent: ["yourwebsite.com"]
+            });
+        </script>
+    </div>
+    <h2>Gear Crafting Calculator</h2>
+    <table>
+        <tr>
+            <td>Item</td>
+            <td>
+                <select id="item" onchange="calculateTotalCost()">
+                    <option value="bag">Bag</option>
+                    <option value="cape">Cape</option>
+                    <option value="armor">Armor</option>
+                    <option value="helmet">Helmet</option>
+                    <option value="shoes">Shoes</option>
+                    <option value="1h_weapon">1H Weapon</option>
+                    <option value="2h_weapon">2H Weapon</option>
+                    <option value="offhand">Offhand</option>
+                </select>
+            </td>
+            <td>Usage Fee</td>
+            <td><input type="number" id="usageFee" oninput="calculateTotalCost()"></td>
+        </tr>
+        <tr>
+            <td>Tier</td>
+            <td>
+                <select id="tier" onchange="calculateTotalCost()">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </td>
+            <td>Return Rate</td>
+            <td><input type="number" id="returnRate" oninput="calculateTotalCost()"></td>
+        </tr>
+        <tr>
+            <td>Enchantment</td>
+            <td>
+                <select id="enchantment" onchange="calculateTotalCost()">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </td>
+            <td>Premium Active?</td>
+            <td>
+                <select id="premium" onchange="calculateTotalCost()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Resources</th>
+            <th>Buy Order?</th>
+            <th>Price</th>
+            <th>Pcs</th>
+            <th>Total Cost</th>
+            <th>Sell Price</th>
+            <th>% Profit</th>
+            <th>Sell Order?</th>
+        </tr>
+        <tr>
+            <td>Resource 1</td>
+            <td>
+                <select id="r1" onchange="calculateTotalCost()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </td>
+            <td><input type="number" id="price1" oninput="calculateTotalCost()"></td>
+            <td><input type="number" id="pcs1" oninput="calculateTotalCost()"></td>
+            <td><input type="number" id="totalCost1" readonly></td>
+            <td><input type="number" id="sellPrice1" oninput="calculateTotalCost()"></td>
+            <td><input type="text" id="profit1" readonly></td>
+            <td>
+                <select id="sellOrder" onchange="calculateTotalCost()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Resource 2</td>
+            <td>
+                <select id="r2" onchange="calculateTotalCost()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </td>
+            <td><input type="number" id="price2" oninput="calculateTotalCost()"></td>
+            <td><input type="number" id="pcs2" oninput="calculateTotalCost()"></td>
+        </tr>
+    </table>
+
+    <h3 style="display: none;">Intermediate Values</h3>
+    <table style="display: none;">
+        <tr>
+            <th>PQ</th>
+            <td><input type="text" id="PQ" readonly></td>
+        </tr>
+        <tr>
+            <th>SumPQ</th>
+            <td><input type="text" id="sumPQ" readonly></td>
+        </tr>
+        <tr>
+            <th>Nutrition Multiplier</th>
+            <td><input type="text" id="nutritionMultiplier" readonly></td>
+        </tr>
+        <tr>
+            <th>Enchantment Multiplier</th>
+            <td><input type="text" id="enchantmentMultiplier" readonly></td>
+        </tr>
+        <tr>
+            <th>Tier Multiplier</th>
+            <td><input type="text" id="tierMultiplier" readonly></td>
+        </tr>
+        <tr>
+            <th>Premium Active</th>
+            <td><input type="text" id="premiumactive" readonly></td>
+        </tr>
+    </table>
+
+    <script>
+        
+        function calculateTotalCost() {
+            const price1 = parseFloat(document.getElementById('price1').value) || 0;
+            const pcs1 = parseFloat(document.getElementById('pcs1').value) || 0;
+            const price2 = parseFloat(document.getElementById('price2').value) || 0;
+            const pcs2 = parseFloat(document.getElementById('pcs2').value) || 0;
+            const r1mult = document.getElementById('r1').value === 'Yes' ? 1.025 : 1;
+            const r2mult = document.getElementById('r2').value === 'Yes' ? 1.025 : 1;
+
+            const sumPQ = (price1 * pcs1 * r1mult) + (price2 * pcs2 * r2mult);
+            const returnRate = parseFloat(document.getElementById('returnRate').value) || 0;
+            const usageFee = parseFloat(document.getElementById('usageFee').value) || 0;
+            const tier = parseInt(document.getElementById('tier').value) || 0;
+            const tierMultiplier = { 3: 1, 4: 2, 5: 4, 6: 8, 7: 16, 8: 32 };
+            const enchantmentMultiplier = { 0: 1, 1: 2, 2: 4, 3: 8 };
+            const tierMult = tierMultiplier[tier] || 1;
+            const enchantment = parseInt(document.getElementById('enchantment').value) || 0;
+            const enchantMult = enchantmentMultiplier[enchantment] || 1;
+            
+
+            document.getElementById('sumPQ').value = sumPQ.toFixed(2);
+            document.getElementById('tierMultiplier').value = tierMult;
+            document.getElementById('enchantmentMultiplier').value = enchantMult;
+
+            const PQ = sumPQ * (1 - returnRate / 100);
+            document.getElementById('PQ').value = PQ.toFixed(2);
+
+            const item = document.getElementById('item').value;
+            const nutritionMultiplierTable = {
+                bag: 14.4,
+                cape: 7.2,
+                armor: 14.4,
+                helmet: 7.2,
+                shoes: 7.2,
+                "1h_weapon": 21.6,
+                "2h_weapon": 28.8,
+                offhand: 7.2
+            };
+            const nutritionMultiplier = nutritionMultiplierTable[item] || 0;
+            document.getElementById('nutritionMultiplier').value = nutritionMultiplier.toFixed(2);
+
+            document.getElementById('totalCost1').value = Math.round(sumPQ * (1-(returnRate / 100)) + (tier < 3 ? 0 : ((usageFee / 100) * nutritionMultiplier * tierMult * enchantMult))).toFixed(0);
+
+            const sellPrice = parseFloat(document.getElementById('sellPrice1').value) || 0;
+            const sellOrder = document.getElementById('sellOrder').value.toLowerCase();
+            const activePremium = document.getElementById('premium').value.toLowerCase();
+            const totalCost = parseFloat(document.getElementById('totalCost1').value) || 0;
+
+            const profitMultiplier = (sellOrder === 'yes') 
+                ? (activePremium === 'yes' ? 0.935 : 0.895) 
+                : (activePremium === 'yes' ? 0.96 : 0.92);
+
+            if (totalCost > 0) {
+                const profitPercent = (((sellPrice * profitMultiplier) - totalCost) / totalCost) * 100;
+                document.getElementById('profit1').value = profitPercent.toFixed(2) + '%';
+            } else {
+                document.getElementById('profit1').value = 'N/A';
+            }
+
+        }
+    </script>
